@@ -5,7 +5,7 @@ interface PrismBridge {
     getTokens: () => Promise<AuthTokens | null>
     saveTokens: (tokens: AuthTokens) => Promise<void>
     clearTokens: () => Promise<void>
-    getMsAuthUrl: () => Promise<string>
+    startLogin: () => Promise<import('@prism/api-types').AuthResponse>
   }
   minecraft: {
     launch: (profileId: string) => Promise<{ ok: boolean; error?: string }>

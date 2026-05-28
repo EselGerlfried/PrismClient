@@ -5,7 +5,7 @@ contextBridge.exposeInMainWorld('prism', {
     getTokens: () => ipcRenderer.invoke('auth:getTokens'),
     saveTokens: (tokens: unknown) => ipcRenderer.invoke('auth:saveTokens', tokens),
     clearTokens: () => ipcRenderer.invoke('auth:clearTokens'),
-    getMsAuthUrl: () => ipcRenderer.invoke('auth:getMsAuthUrl'),
+    startLogin: () => ipcRenderer.invoke('auth:startLogin'),
   },
   minecraft: {
     launch: (profileId: string) => ipcRenderer.invoke('minecraft:launch', profileId),
