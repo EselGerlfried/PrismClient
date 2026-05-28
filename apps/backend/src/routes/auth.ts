@@ -3,11 +3,26 @@ import { z } from 'zod';
 import { exchangeCode, fetchProfile } from '../services/microsoft-oauth.js';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../services/jwt.js';
 import { query } from '../db/client.js';
+import { config } from '../config.js';
 
 const authCodeSchema = z.object({ code: z.string().min(1) });
 const refreshSchema = z.object({ refreshToken: z.string().min(1) });
 
 export default async function authRoutes(app: FastifyInstance) {
+  app.get('/url', async (_request, reply) => {
+    const params = new URLSearchParams({
+      client_id: config.MS_CLIENT_ID,
+      response_type: 'code',
+      redirect_uri: config.MS_REDIRECT_URI,
+      scope: 'XboxLive.signin offline_access',
+      response_mode: 'query',
+    });
+    return reply.send({
+      url: `https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?${params}`,
+      redirectUri: app.config.MS_REDIRECT_URI,
+    });
+  });
+
   app.post('/microsoft', async (request, reply) => {
     const body = authCodeSchema.safeParse(request.body);
     if (!body.success) return reply.status(400).send({ error: 'code required' });
