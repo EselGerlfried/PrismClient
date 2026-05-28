@@ -6,6 +6,36 @@ import { useProfilesStore } from '../store/profiles.js'
 import { apiFetch } from '../api/client.js'
 import type { LauncherProfile } from '@prism/api-types'
 
+const IS_DEV = import.meta.env.DEV
+
+const MOCK_USER = {
+  uuid: 'dev-uuid',
+  username: 'DevPlayer',
+  email: 'dev@prismclient.app',
+  tier: 'max' as const,
+  createdAt: new Date().toISOString(),
+  avatarUrl: null,
+}
+const MOCK_TOKENS = {
+  accessToken: 'dev-token',
+  refreshToken: 'dev-refresh',
+  expiresAt: Date.now() + 3600_000,
+}
+const MOCK_PROFILE = {
+  id: 'dev-profile',
+  name: 'Fabric 1.21.4',
+  loader: 'fabric' as const,
+  mcVersion: '1.21.4',
+  loaderVersion: '0.16.9',
+  ramMb: 4096,
+  javaPath: null,
+  javaFlags: '-XX:+UseG1GC',
+  modIds: [],
+  hudLayoutId: null,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+}
+
 export function LoginScreen() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -102,6 +132,28 @@ export function LoginScreen() {
           <GlassButton onClick={handleLogin} disabled={loading} loading={loading} variant="accent">
             {loading ? 'Waiting for Microsoft...' : 'Sign in with Microsoft'}
           </GlassButton>
+          {IS_DEV && (
+            <button
+              onClick={() => {
+                setProfiles([MOCK_PROFILE])
+                setActiveProfile(MOCK_PROFILE.id)
+                setAuth(MOCK_USER, MOCK_TOKENS)
+              }}
+              style={{
+                marginTop: 12,
+                width: '100%',
+                padding: '8px 0',
+                background: 'transparent',
+                border: '1px dashed rgba(255,255,255,0.15)',
+                borderRadius: 10,
+                color: 'var(--prism-text-disabled)',
+                cursor: 'pointer',
+                fontSize: 11,
+              }}
+            >
+              DEV: Skip login
+            </button>
+          )}
           <p style={{
             color: 'var(--prism-text-disabled)',
             fontSize: 11, marginTop: 18, lineHeight: 1.5,
